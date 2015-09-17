@@ -4,6 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class PersonalProfile
+ * @package App
+ */
 class PersonalProfile extends Model
 {
     protected $table = 'personalProfiles';
