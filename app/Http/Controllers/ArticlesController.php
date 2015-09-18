@@ -9,6 +9,8 @@ use App\Http\Requests\ArticleRequest;
 use App\Http\Controllers\Controller;
 use App\Article;
 use Carbon\Carbon;
+use Laracasts\Flash\Flash;
+
 //use Request;
 
 /**
@@ -93,6 +95,10 @@ class ArticlesController extends Controller
     public function store(ArticleRequest $request){
         //$input['published_at'] = Carbon::now();
         Auth::user()->articles()->save(new Article($request->all()));
+
+        //session()->flash('flash_message', 'Your article has been created!');
+        //session()->flash('flash_message_important', true);
+        flash()->overlay('Your article has been successfully created', 'Good Job');
         //Article::create($request->all());
         //$this->validate($request, ['title' => 'required', 'body' => 'required']);
         return redirect('articles');
