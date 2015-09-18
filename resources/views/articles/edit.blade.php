@@ -14,6 +14,12 @@
     </div>
     {!! Form::close() !!}
 
+    {!! Form::model($article, ['method' => 'GET', 'action' => ['ArticlesController@delete', $article->id]]) !!}
+    <div class="form-group">
+        {!! Form::submit('Delete this articles', ['style'=> 'width:300px', 'class' => 'btn btn-primary form-control'] ) !!}
+    </div>
+    {!! Form::close() !!}
+
     {{--@if ($errors->any())--}}
         {{--<ul class="alert alert-danger">--}}
             {{--@foreach ($errors->all() as $error)--}}

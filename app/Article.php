@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\Eloquent;
 
 /**
  * Class Article
@@ -12,9 +14,7 @@ use Carbon\Carbon;
 class Article extends Model
 {
 
-
-
-
+    use Eloquent\SoftDeletes;
     //used to rename the table name, otherwise plural of article will be used
     //protected $table = 'my_users';
 

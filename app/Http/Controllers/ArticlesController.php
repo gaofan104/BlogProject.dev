@@ -55,8 +55,8 @@ class ArticlesController extends Controller
      * @param $id
      * @return \Illuminate\View\View
      */
-    public function show($id){
-        $article = Article::findOrFail($id);
+    public function show(Article $article){
+        //$article = Article::findOrFail($id);
         //dd($article);
 
 /*        if (is_null($article)){
@@ -99,8 +99,8 @@ class ArticlesController extends Controller
     }
 
 
-    public function edit($id){
-        $article = Auth()->user()->articles()->find($id);
+    public function edit(Article $article){
+        //$article = Auth()->user()->articles()->find($id);
         if (! is_null($article)){
             return view('articles.edit', compact('article'));
         }
@@ -109,9 +109,17 @@ class ArticlesController extends Controller
 
     // laravel knows that id is a wildcard. request is a predefined object
     // laravel will instantiate that object
-    public function update($id, ArticleRequest $request){
-        $article = Article::findOrFail($id);
+    public function update(Article $article, ArticleRequest $request){
+        //$article = Article::findOrFail($id);
         $article->update($request->all());
         return redirect('articles');
+    }
+
+    public function delete($id){
+        //$article = Article::findOrFail($id);
+        //$article->runSoftDelete();
+        //return redirect('articles');
+
+        return ('not available yet');
     }
 }

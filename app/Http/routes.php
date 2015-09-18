@@ -51,7 +51,7 @@ Route::get('contact', 'PagesController@contact');
 
 Route::resource('articles', 'ArticlesController');
 Route::get('myArticles', 'ArticlesController@myArticles');
-
+Route::get('articles/{articles}/delete', 'ArticlesController@delete');
 Route::get('foo', ['middleware' =>  'manager', function(){
     return 'THIS PAGE MAY ONLY BE VIEWED BY MANAGERS!';
 }]);
