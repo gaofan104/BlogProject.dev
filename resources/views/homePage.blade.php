@@ -42,8 +42,7 @@
         <div class="title">You have successfully log into our Blog</div>
         <a href = "/">Click here to direct to Welcome Page</a></br>
         <a href = "/logout">Click here to log out</a></br>
-        <a href = "/articles">Click here to view all published articles</a></br>
-        <a href = "/blogPage">Click here to go to your own Blog</a>
+        <a href = "/blogPage">Click here to go to our Blog Application</a>
     </div>
 </div>
 </body>

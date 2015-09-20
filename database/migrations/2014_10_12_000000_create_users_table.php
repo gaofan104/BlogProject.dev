@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
+
         });
     }
 
@@ -33,6 +34,7 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
+        //Schema::drop('articles');
         Schema::drop('users');
     }
 }

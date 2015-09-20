@@ -101,7 +101,7 @@ class ArticlesController extends Controller
         flash()->overlay('Your article has been successfully created', 'Good Job');
         //Article::create($request->all());
         //$this->validate($request, ['title' => 'required', 'body' => 'required']);
-        return redirect('articles');
+        return redirect('myArticles');
     }
 
 
@@ -110,7 +110,7 @@ class ArticlesController extends Controller
         if (! is_null($article)){
             return view('articles.edit', compact('article'));
         }
-        return redirect('articles')->withErrors(['Error:' => 'You Are Not Authorized to Modify This Article']);
+        return redirect('myArticles')->withErrors(['Error:' => 'You Are Not Authorized to Modify This Article']);
     }
 
     // laravel knows that id is a wildcard. request is a predefined object
@@ -118,7 +118,7 @@ class ArticlesController extends Controller
     public function update(Article $article, ArticleRequest $request){
         //$article = Article::findOrFail($id);
         $article->update($request->all());
-        return redirect('articles');
+        return redirect('myArticles');
     }
 
     public function delete($id){

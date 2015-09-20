@@ -26,6 +26,10 @@ class CreateArticlesTable extends Migration
                   ->references('id')
                   ->on('users')
                   ->onDelete('cascade');
+/*            $table->foreign('author')
+                  ->references('username')
+                  ->on('users')
+                  ->onDelete('cascade');*/
         });
     }
 

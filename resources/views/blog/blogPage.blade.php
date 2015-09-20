@@ -41,6 +41,7 @@
         <p>{!! Auth::user() !!}</p>
         <a href = "/">Click here to direct to Welcome Page</a></br>
         <a href = "/logout">Click here to log out</a></br>
+        <a href = "/articles">Click here to view all published articles</a></br>
         <a href = "/myArticles">Click here to view your articles</a>
 
     </div>

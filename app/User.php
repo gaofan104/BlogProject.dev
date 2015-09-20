@@ -59,7 +59,7 @@ class User extends Model implements AuthenticatableContract,
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function articles(){
-        return $this->hasMany('App\Article');
+        return $this->hasMany('App\Article'/*, ['user_id', 'author'], ['id', 'username']*/);
     }
 
     public function personalProfile(){

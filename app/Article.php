@@ -46,7 +46,7 @@ class Article extends Model
      * @return mixed
      */
     public function user(){
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\User'/*, ['user_id', 'author'], ['id', 'username']*/);
     }
 
     public function tags(){
