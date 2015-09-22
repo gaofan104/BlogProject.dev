@@ -1,1 +1,0 @@
-{"version":3,"sources":["normalize.css","app.css"],"names":[],"mappings":"AAAA,WACA,OAAA,KCDA,MAAA,MAAA,IAAA,KAAA,YAAA,KAAA,gBAAA,KAAA,MAAA,YAAA","file":"all.css","sourcesContent":[".normalize{\n    margin: 50px;\n}",".home{color:red}body{padding-top:40px}.checkbox label,body,label{font-weight:300}\n/*# sourceMappingURL=app.css.map */"],"sourceRoot":"/source/"}

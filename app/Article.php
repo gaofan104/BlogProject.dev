@@ -52,4 +52,17 @@ class Article extends Model
     public function tags(){
         return $this->belongsToMany('App\Tag');
     }
+
+    public function comments(){
+        return $this->hasMany('App\Comment');
+    }
+
+/*    public function tagsList(){
+        //dd($this->tags()->lists('id'));
+        return $this->tags()->lists('id');
+    }*/
+    public function getTagListAttribute(){
+       // dd($this->tags->lists('id')->all());
+        return $this->tags->lists('id')->all();
+    }
 }

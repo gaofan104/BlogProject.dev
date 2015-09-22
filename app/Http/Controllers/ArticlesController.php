@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ArticleRequest;
 use App\Http\Controllers\Controller;
 use App\Article;
+use App\Tag;
 use Carbon\Carbon;
 use Laracasts\Flash\Flash;
 
@@ -66,15 +67,16 @@ class ArticlesController extends Controller
         }else {
 
         }*/
-
-        return view('articles.show', compact('article'));
+        $comments = $article->comments()->get();
+        return view('articles.show', compact('article', 'comments'));
     }
 
     /**
      * @return \Illuminate\View\View
      */
     public function create(){
-        return view ('articles.create');
+        $tags = \App\Tag::lists('name', 'id');
+        return view ('articles.create', compact('tags'));
     }
 
     /**
@@ -93,9 +95,14 @@ class ArticlesController extends Controller
      * another way to validate request form
      */
     public function store(ArticleRequest $request){
-        //$input['published_at'] = Carbon::now();
-        Auth::user()->articles()->save(new Article($request->all()));
 
+        //$input['published_at'] = Carbon::now();
+        $article = Auth::user()->articles()->create($request->all());
+
+        $tagIDs = $request->input('tagList');
+        if (! is_null($tagIDs) ){
+            $article->tags()->sync($tagIDs);
+        }
         //session()->flash('flash_message', 'Your article has been created!');
         //session()->flash('flash_message_important', true);
         flash()->overlay('Your article has been successfully created', 'Good Job');
@@ -108,8 +115,10 @@ class ArticlesController extends Controller
     public function edit(Article $article){
         //$article = Auth()->user()->articles()->find($id);
         if (! is_null($article)){
-            return view('articles.edit', compact('article'));
+            $tags = Tag::lists('name', 'id');
+            return view('articles.edit', compact('article', 'tags'));
         }
+
         return redirect('myArticles')->withErrors(['Error:' => 'You Are Not Authorized to Modify This Article']);
     }
 
@@ -118,6 +127,12 @@ class ArticlesController extends Controller
     public function update(Article $article, ArticleRequest $request){
         //$article = Article::findOrFail($id);
         $article->update($request->all());
+        //$article->tags()->detach();
+        $tagIDs = $request->input('tagList');
+        if (! is_null($tagIDs) ){
+            $article->tags()->sync($tagIDs);
+        }
+        //$article->tags()->attach($request->input('tagList'));
         return redirect('myArticles');
     }
 

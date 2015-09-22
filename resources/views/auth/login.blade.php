@@ -14,6 +14,12 @@
 <div>
     <input type="checkbox" name="remember"> Remember Me
 </div>
+<div>
+    <a href="/password/email">Forgot your password?</a>
+</div>
+<div>
+    <a href="/auth/register">Do not have an account?</a>
+</div>
 
 <div>
     <button type="submit">Login</button>

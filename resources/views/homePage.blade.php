@@ -36,7 +36,8 @@
     </style>
 </head>
 <body>
-<div class="container">
+<div class="container-fluid">
+    @include('partials.nav')
     <div class="content">
         <p>{!! Auth::user() !!}</p>
         <div class="title">You have successfully log into our Blog</div>
@@ -44,6 +45,6 @@
         <a href = "/logout">Click here to log out</a></br>
         <a href = "/blogPage">Click here to go to our Blog Application</a>
     </div>
-</div>
+    </div>
 </body>
 </html>
