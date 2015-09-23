@@ -9,8 +9,11 @@ use App\Http\Requests\ArticleRequest;
 use App\Http\Controllers\Controller;
 use App\Article;
 use App\Tag;
+use Storage;
+use Image;
 use Carbon\Carbon;
 use Laracasts\Flash\Flash;
+use Symfony\Component\HttpFoundation\Response;
 
 //use Request;
 
@@ -68,7 +71,25 @@ class ArticlesController extends Controller
 
         }*/
         $comments = $article->comments()->get();
-        return view('articles.show', compact('article', 'comments'));
+
+        if (pathinfo($article->fileField, PATHINFO_EXTENSION) == 'jpg'){
+            $img = Image::make(Storage::get('Uploads/Articles/'.Auth::user()->username.'/'.$article->fileField))->resize(500,300);
+            $img->encode('png');
+            $type = 'png';
+            $upload = 'data:image/' . $type . ';base64,' . base64_encode($img);
+            $upload_type = 'img';
+        } else if (Storage::exists('Uploads/Articles/'.Auth::user()->username.'/'.$article->fileField)){
+            $upload = Storage::get('Uploads/Articles/'.Auth::user()->username.'/'.$article->fileField);
+            $upload_type = 'text';
+        } else {
+            $upload = 'No Content Uploaded';
+            $upload_type = 'text';
+        }
+
+        // set content-type
+        //$img->header('Content-Type', 'image/jpg');
+        //dd($base64);
+        return view('articles.show', compact('article', 'comments', 'upload_type', 'upload'));
     }
 
     /**
@@ -98,6 +119,15 @@ class ArticlesController extends Controller
 
         //$input['published_at'] = Carbon::now();
         $article = Auth::user()->articles()->create($request->all());
+        //$article = Auth::user()->articles()->firstOrNew($request->all());
+        $article->fileField = $request->file('fileField')->getClientOriginalName();
+        $article->author = Auth::user()->username;
+        $article->save();
+
+        //persist uploaded file
+        Storage::put('Uploads/Articles/'.Auth::user()->username.'/'.$request->file('fileField')->getClientOriginalName(),
+            file_get_contents($request->file('fileField')->getRealPath()));
+
 
         $tagIDs = $request->input('tagList');
         if (! is_null($tagIDs) ){
@@ -143,4 +173,9 @@ class ArticlesController extends Controller
 
         return ('not available yet');
     }
+
+    private function uploadFile(){
+
+    }
+
 }

@@ -5,7 +5,7 @@
 
     <hr/>
 
-    {!! Form::open(['url' => 'articles']) !!}
+    {!! Form::open(['url' => 'articles', 'files' => true]) !!}
         @include('articles.articlePartial', ['submitButtonText' => 'Add Article'])
     {!! Form::close() !!}
 

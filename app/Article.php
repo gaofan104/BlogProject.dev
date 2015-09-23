@@ -23,6 +23,7 @@ class Article extends Model
         'body',
         'published_at',
         'author',
+        'fileField',
         'user_id'
     ];
 
@@ -46,7 +47,7 @@ class Article extends Model
      * @return mixed
      */
     public function user(){
-        return $this->belongsTo('App\User'/*, ['user_id', 'author'], ['id', 'username']*/);
+        return $this->belongsTo('App\User'/*, 'user_id', 'id'*/);
     }
 
     public function tags(){

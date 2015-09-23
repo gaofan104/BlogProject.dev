@@ -23,6 +23,13 @@
     @endunless
 
 
+    <h2>File Content:</h2>
+    @if ($upload_type == 'img')
+        <img src ={{ $upload }}>
+    @else
+        <text> {{ $upload }}</text>
+    @endif
+
     <h2>
         Comments:
     </h2>

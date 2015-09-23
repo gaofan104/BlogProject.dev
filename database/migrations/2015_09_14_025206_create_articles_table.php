@@ -18,6 +18,7 @@ class CreateArticlesTable extends Migration
             $table->string('title');
             $table->text('body');
             $table->string('author');
+            $table->string('fileField');
             $table->timestamps();
             $table->timestamp('published_at')->notnull();
             $table->softDeletes();
@@ -26,7 +27,7 @@ class CreateArticlesTable extends Migration
                   ->references('id')
                   ->on('users')
                   ->onDelete('cascade');
-/*            $table->foreign('author')
+            /*$table->foreign('author')
                   ->references('username')
                   ->on('users')
                   ->onDelete('cascade');*/

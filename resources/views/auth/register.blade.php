@@ -2,8 +2,8 @@
     {!! csrf_field() !!}
 
     <div>
-        Name
-        <input type="text" name="name" value="{{ old('name') }}">
+        Username
+        <input type="text" name="username" value="{{ old('username') }}">
     </div>
 
     <div>
