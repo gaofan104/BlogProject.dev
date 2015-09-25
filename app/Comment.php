@@ -3,10 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Comment extends Model
 {
     protected $fillable = [
+        'article_id',
         'user_id',
         'content',
         'published_at'
@@ -15,8 +17,8 @@ class Comment extends Model
     protected $dates = ['published_at'];
 
     //setPublishedAtAttribute
-    public function setPublishedAtAttribute($date){
-        $this->attributes['published_at'] = Carbon::createFromFormat('Y-m-d', $date);
+    public function setPublishedAtAttribute(){
+        $this->attributes['published_at'] = Carbon::now();
     }
 
     public function user(){

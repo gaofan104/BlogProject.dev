@@ -43,7 +43,10 @@
         <div class="title">You have successfully log into our Blog</div>
         <a href = "/">Click here to direct to Welcome Page</a></br>
         <a href = "/logout">Click here to log out</a></br>
-        <a href = "/blogPage">Click here to go to our Blog Application</a>
+        <a href = "/blogPage">Click here to go to our Blog Application</a></br>
+        @if (Auth::user()->type == 'admin')
+        <a href = "/manageUser">Click here to manage users -- admins only </a>
+        @endif
     </div>
     </div>
 </body>

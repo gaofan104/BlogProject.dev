@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Comment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use App\Http\Requests\CommentRequest;
 use App\Http\Requests\ArticleRequest;
 use App\Http\Controllers\Controller;
 use App\Article;
 use App\Tag;
 use Storage;
 use Image;
-use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Laracasts\Flash\Flash;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -42,7 +44,8 @@ class ArticlesController extends Controller
         /*      $article = $articles->first();
                 $article->title = 'Updated title';
                 $article->save();*/
-        return view('articles.index', compact('articles'));
+        $user = Auth()->user();
+        return view('articles.index', compact('user', 'articles'));
     }
 
     /**
@@ -54,7 +57,8 @@ class ArticlesController extends Controller
         /*      $article = $articles->first();
                 $article->title = 'Updated title';
                 $article->save();*/
-        return view('articles.index', compact('articles'));
+        $user = Auth()->user();
+        return view('articles.index', compact('user', 'articles'));
     }
 
     /**
@@ -70,26 +74,17 @@ class ArticlesController extends Controller
         }else {
 
         }*/
-        $comments = $article->comments()->get();
+        $comments = $article->comments()->latest('published_At')->get();
 
-        if (pathinfo($article->fileField, PATHINFO_EXTENSION) == 'jpg'){
-            $img = Image::make(Storage::get('Uploads/Articles/'.Auth::user()->username.'/'.$article->fileField))->resize(500,300);
-            $img->encode('png');
-            $type = 'png';
-            $upload = 'data:image/' . $type . ';base64,' . base64_encode($img);
-            $upload_type = 'img';
-        } else if (Storage::exists('Uploads/Articles/'.Auth::user()->username.'/'.$article->fileField)){
-            $upload = Storage::get('Uploads/Articles/'.Auth::user()->username.'/'.$article->fileField);
-            $upload_type = 'text';
-        } else {
-            $upload = 'No Content Uploaded';
-            $upload_type = 'text';
-        }
+        $uploadArray = $this->getUploadedContent($article);
+
+        $upload_content = $uploadArray[0];
+        $upload_type = $uploadArray[1];
 
         // set content-type
         //$img->header('Content-Type', 'image/jpg');
         //dd($base64);
-        return view('articles.show', compact('article', 'comments', 'upload_type', 'upload'));
+        return view('articles.show', compact('article', 'comments', 'upload_content', 'upload_type'));
     }
 
     /**
@@ -120,13 +115,14 @@ class ArticlesController extends Controller
         //$input['published_at'] = Carbon::now();
         $article = Auth::user()->articles()->create($request->all());
         //$article = Auth::user()->articles()->firstOrNew($request->all());
-        $article->fileField = $request->file('fileField')->getClientOriginalName();
+        if ($request->file('fileField') != null) {
+            $article->fileField = $request->file('fileField')->getClientOriginalName();
+            Storage::put('Uploads/Articles/'.Auth::user()->username.'/'.$request->file('fileField')->getClientOriginalName(),
+                file_get_contents($request->file('fileField')->getRealPath()));
+
+        }
         $article->author = Auth::user()->username;
         $article->save();
-
-        //persist uploaded file
-        Storage::put('Uploads/Articles/'.Auth::user()->username.'/'.$request->file('fileField')->getClientOriginalName(),
-            file_get_contents($request->file('fileField')->getRealPath()));
 
 
         $tagIDs = $request->input('tagList');
@@ -143,39 +139,82 @@ class ArticlesController extends Controller
 
 
     public function edit(Article $article){
-        //$article = Auth()->user()->articles()->find($id);
+        //dd($article);
+        $article = Auth()->user()->articles()->find($article->id);
         if (! is_null($article)){
             $tags = Tag::lists('name', 'id');
-            return view('articles.edit', compact('article', 'tags'));
+            $filename = $article->fileField;
+            return view('articles.edit', compact('article', 'tags', 'filename'));
         }
 
-        return redirect('myArticles')->withErrors(['Error:' => 'You Are Not Authorized to Modify This Article']);
+        return redirect('articles')->withErrors(['Error:' => 'You Are Not Authorized to Modify This Article']);
     }
 
     // laravel knows that id is a wildcard. request is a predefined object
     // laravel will instantiate that object
     public function update(Article $article, ArticleRequest $request){
+        //dd($request);
         //$article = Article::findOrFail($id);
         $article->update($request->all());
+        if ($request->file('fileField') != null) {
+            $article->fileField = $request->file('fileField')->getClientOriginalName();
+            Storage::put('Uploads/Articles/' . Auth::user()->username . '/' . $request->file('fileField')->getClientOriginalName(),
+                file_get_contents($request->file('fileField')->getRealPath()));
+        }
+        $article->save();
+
         //$article->tags()->detach();
         $tagIDs = $request->input('tagList');
         if (! is_null($tagIDs) ){
             $article->tags()->sync($tagIDs);
         }
         //$article->tags()->attach($request->input('tagList'));
-        return redirect('myArticles');
+        return redirect()->route('articles.show', ['articles' => $article->id]);
     }
 
-    public function delete($id){
-        //$article = Article::findOrFail($id);
-        //$article->runSoftDelete();
-        //return redirect('articles');
-
-        return ('not available yet');
+    public function addComment(CommentRequest $request, Article $article){
+        $comment = new Comment;
+        $date = Carbon::now();
+        //$comment->setPublishedAtAttribute();
+        $comment->content = $request->get('content');
+        $comment->setPublishedAtAttribute();
+        $comment->article()->associate($article);
+        $comment->user()->associate(Auth::user());
+        $comment->save();
+        if (! is_null($article)){
+            //        dd($comment);
+            flash()->overlay('Your Comment has been successfully added!', 'Good Job');
+            return redirect()->back();
+        }
+        return redirect('articles')->withErrors(['Error:' => 'This article does not exit anymore!']);
     }
 
-    private function uploadFile(){
+    public function delete(Article $article){
+        //dd($article);
+        $article->delete();
+        flash()->overlay('Your Article has been removed!', 'Good Job');
+        return redirect("myArticles");
 
+        //return ('not available yet');
+    }
+
+    private function getUploadedContent($article){
+
+        if (pathinfo($article->fileField, PATHINFO_EXTENSION) == 'jpg'){
+            $img = Image::make(Storage::get('Uploads/Articles/'.$article->author.'/'.$article->fileField))->resize(500,300);
+            $img->encode('png');
+            $type = 'png';
+            $upload = 'data:image/' . $type . ';base64,' . base64_encode($img);
+            $upload_type = 'img';
+        } else if (Storage::exists('Uploads/Articles/'.$article->author.'/'.$article->fileField)){
+            $upload = Storage::get('Uploads/Articles/'.$article->author.'/'.$article->fileField);
+            $upload_type = 'text';
+        } else {
+            $upload = 'No Content Uploaded';
+            $upload_type = 'text';
+        }
+
+        return array($upload, $upload_type);
     }
 
 }

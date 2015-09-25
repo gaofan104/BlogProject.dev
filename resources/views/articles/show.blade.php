@@ -3,18 +3,20 @@
 @section('content')
     <h1>Title:</h1>
     {{ $article->title }}
+    <h3>Author:</h3>
+    {{ $article->author }}
+    <h3>Published on:</h3>
+    {{ $article->published_at }}
+
     <article>
         <div class = "body">
-            <h2>
-                Body:
-            </h2>
-
+            <h3>Body:</h3>
             {{ $article->body }}
         </div>
     </article>
 
     @unless ($article->tags->isEmpty())
-        <h2>Tags:</h2>
+        <h3>Tags:</h3>
         <ul>
             @foreach ($article->tags as $tag)
                 <li>{{ $tag->name }}</li>
@@ -23,22 +25,32 @@
     @endunless
 
 
-    <h2>File Content:</h2>
+    <h3>File Content:</h3>
     @if ($upload_type == 'img')
-        <img src ={{ $upload }}>
+        <img src ={{ $upload_content }}>
     @else
-        <text> {{ $upload }}</text>
+        <text> {{ $upload_content }}</text>
     @endif
 
-    <h2>
+    <h3>Add Comment:</h3>
+    {!! Form::open(['method' => 'POST', 'action' => ['ArticlesController@addComment', $article->id]]) !!}
+        @include('articles.commentPartial', ['submitButtonText' => 'Add Comment'])
+    {!! Form::close() !!}
+    @include('errors.list')
+
+    <h3>
         Comments:
-    </h2>
+    </h3>
 
     @foreach ($comments as $comment)
         <article>
             {{ $comment->content }} {{ $comment->published_at }}
         </article>
     @endforeach
+
+
+
+
 
 
     {!! Form::open(['method' => 'GET', 'action' => ['ArticlesController@edit', $article->id]]) !!}
@@ -52,6 +64,5 @@
         {!! Form::submit('View all articles', ['style'=> 'width:300px', 'class' => 'btn btn-primary form-control'] ) !!}
     </div>
     {!! Form::close() !!}
-
 
 @stop

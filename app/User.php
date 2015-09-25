@@ -33,14 +33,14 @@ class User extends Model implements AuthenticatableContract,
      * The attributes that give timestamp to deleted users
      * @var string
      */
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at', 'published_at'];
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['username', 'firstname', 'lastname', 'email', 'password'];
+    protected $fillable = ['username', 'email', 'password', 'published_at'];
 
     /**
      * The attributes that should not be assigned???

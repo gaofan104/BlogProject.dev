@@ -52,10 +52,19 @@ Route::get('contact', 'PagesController@contact');
 
 Route::resource('articles', 'ArticlesController');
 Route::get('myArticles', 'ArticlesController@myArticles');
-Route::get('articles/{articles}/delete', 'ArticlesController@delete');
+Route::post('articles/{articles}/delete', 'ArticlesController@delete');
 Route::get('foo', ['middleware' =>  'manager', function(){
     return 'THIS PAGE MAY ONLY BE VIEWED BY MANAGERS!';
 }]);
+Route::post('article/{articles}/addComment', 'ArticlesController@addComment');
 
 // Personal Page...
 Route::get('blogPage', 'Blog\BlogPagesController@index');
+
+// Admin's Articles controller
+Route::get('addTag', 'Admin\ArticlesController@addTag');
+Route::post('createTag', 'Admin\ArticlesController@createTag');
+
+//Admin's Users controller
+Route::get('manageUser', 'Admin\UsersController@manageUser');
+Route::post('deleteUser/{user}', 'Admin\UsersController@deleteUser');

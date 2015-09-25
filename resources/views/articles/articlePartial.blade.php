@@ -18,7 +18,8 @@
 </div>
 <div class="form-group">
     {!! Form::label('fileField', 'Upload File:') !!}
-    {!! Form::file('fileField') !!}
+    {!! Form::file('fileField',['value' => $filename]) !!}
+    {!! Form::label('fileField', 'Previous File:'.$filename) !!}
 </div>
 <div class="form-group">
     {!! Form::submit($submitButtonText, ['style' => 'width:300px', 'class' => 'btn btn-primary form-control'] ) !!}

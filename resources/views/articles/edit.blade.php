@@ -14,7 +14,7 @@
     </div>
     {!! Form::close() !!}
 
-    {!! Form::model($article, ['method' => 'GET', 'action' => ['ArticlesController@delete', $article->id]]) !!}
+    {!! Form::model($article, ['method' => 'POST', 'action' => ['ArticlesController@delete', $article->id]]) !!}
     <div class="form-group">
         {!! Form::submit('Delete this articles', ['style'=> 'width:300px', 'class' => 'btn btn-primary form-control'] ) !!}
     </div>
